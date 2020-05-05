@@ -1,0 +1,975 @@
+//"A Noise"
+//"This is a text adventure game for Test1B"
+//Submitted by: Faith Peters
+//COSC.1337.701
+
+
+//headers and functions
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+int houseMovement(int house, string input);
+int woodsMovement(int woods, string input); 
+
+int main()
+{
+
+	bool house;
+	house = true;
+	bool backyard;
+	backyard = false;
+	bool underground = false;
+	//variables to make do while functions
+
+	int housePosition;
+	housePosition = 2;
+	int position;
+	position = 5;
+	//positional variables
+
+	string key;
+	key = "Your door * keys * rest under a rack of pans.";
+	string coat;
+	coat = "coat";
+	string flashlight;
+	flashlight = "A * flashlight * is on an ornate chair pulled away from the desk. ";
+	bool flashlightToggle;
+	flashlightToggle = false;
+	string key2;
+	key2 = "A key is wrapped around his neck.";
+	//variables for items you can pick up
+
+	string hand;
+	hand = "nothing";
+	//a function to get input to put key items in inventory
+	string input;
+	// a function to take user input
+
+	string conditional3;
+	conditional3 = "Your *coat* has been thrown on the rumpled bedsheets.";
+	//conditional strings that prompt user to pick up objects
+
+	vector<int> returns;
+	vector<string> inventory; //vector for inventory
+
+
+	cout << "This is a text adventure game. \nThe commands are:\nhelp: reads off the series of commands.\ndirection(left/right/backward/forward): This moves your character ";
+	cout << "left, right, backward or forward\ninfo: This gives you info on your current area. YOU WILL NEED TO USE THE INFO COMMAND.\n\nflashlight: This toggles your flashlight ";
+	cout << "and allows you to see the area more clearly.\ntake (item): This allows you to pick up an item and put it in your inventory.\n";
+	//explains commands
+
+
+	cout << "\n\n\nIt is nighttime. You are inside reading a book before bed.\nSuddenly, you hear a noise coming from behind your house. ";
+	cout << "It is an odd noise that makes you want to investigate.\n";
+	// starting prompt
+
+	do // container for house positions and commands based on position in house
+	{
+		switch (housePosition) // Switcher for house position 
+		{
+		case 1:		//case for kitchen
+			cout << "You are in the kitchen.\n";
+			cout << "What would you like to do?\n";
+			do {
+				cin >> input;
+
+				if (input == "info")
+				{
+					cout << "\nThe kitchen is dark. You cleaned it after you made dinner tonight. ";
+					cout << "As a result, not much is out. A couple of apples are on the counter.\nA container labeled assorted tea ";
+					cout << "is in the corner. " << key << "To your right is the living room.\n";
+					cout << "Behind you is your study.\n\n";
+				}
+
+				else if (input == "forward" || input == "backward" || input == "left" || input == "right")
+				{
+					housePosition = houseMovement(housePosition, input);
+				}
+
+				else if (input == "flashlight")
+				{
+					cout << "It is already bright enough.";
+				}
+
+				else if (input == "help") {
+					cout << "This is a text adventure game. The commands are:\nhelp: reads off the series of commands.\ndirection(left/right/backward/forward): This moves your character ";
+					cout << "left, right, backward or forward\ninfo: This gives you info on your current area.\noff/on: This toggles your flashlight ";
+					cout << "and allows you to see the area more clearly.\ntake (item): This allows you to pick up an item and put it in your inventory.\n";
+				}
+
+				else if (input == "take")
+				{
+					cin >> hand;
+					if (hand == "keys")
+					{
+						cout << "\nYou pick up the keys. One of these will open the back door leading to the woods.\n";
+						key = " ";
+						inventory.push_back(key);
+					}
+					else
+					{
+						cout << "You cannot pick that up.";
+					}
+				}
+
+				else
+				{
+					cout << "Could you retype that?";
+				}
+
+			} while (housePosition == 1);
+			break;
+
+		case 2:			//case for living room
+			cout << "You are in the living room.\n";
+			cout << "What would you like to do?\n";
+			do {
+				cin >> input;
+				if (input == "info")
+				{
+					cout << "\nThe living room is the largest room in your house. A single lamp in the corner illuminates ";
+					cout << "the room. Shadows cast by the furniture dance across the walls. \nA dogeared book and a cup of tea ";
+					cout << "lay next to your reclining chair. The open kitchen is to your left. To your right is your room.\n";
+					cout << "Behind you is an empty hallway and in front of you is your back door.\n";
+				}
+				//info command
+
+				else if (input == "forward")
+				{
+					if ((find(inventory.begin(), inventory.end(), key) != inventory.end() && find(inventory.begin(), inventory.end(), coat) != inventory.end() && find(inventory.begin(), inventory.end(), flashlight) != inventory.end()))
+					{
+						cout << "Onwards, to the woods.";
+						backyard = true;
+						house = false;
+						housePosition = 0;
+						position = 5;
+					}
+					else if ((find(inventory.begin(), inventory.end(), coat) != inventory.end() && find(inventory.begin(), inventory.end(), flashlight) != inventory.end()))
+					{
+						cout << "The door is locked";
+					}
+					else if ((find(inventory.begin(), inventory.end(), key) != inventory.end() && find(inventory.begin(), inventory.end(), flashlight) != inventory.end()))
+					{
+						cout << "It is cold outside.";
+					}
+					else if ((find(inventory.begin(), inventory.end(), key) != inventory.end() && find(inventory.begin(), inventory.end(), coat) != inventory.end()))
+					{
+						cout << "It is dark outside.";
+					}
+					else
+					{
+						cout << "It is a dark chilly night. The door is locked.";
+					}
+				}
+				else if (input == "backward" || input == "left" || input == "right")
+				{
+					housePosition = houseMovement(housePosition, input);
+				}
+				// forward command
+				// conditional if user has all key items allow to go outside
+
+				//right command sends user to bedroom
+
+				else if (input == "flashlight")
+				{
+					cout << "It is already bright enough.";
+				}
+				//flashlight command
+
+				else if (input == "help") {
+					cout << "This is a text adventure game. The commands are:\nhelp: reads off the series of commands.\ndirection(left/right/backward/forward): This moves your character ";
+					cout << "left, right, backward or forward\ninfo: This gives you info on your current area.\noff/on: This toggles your flashlight ";
+					cout << "and allows you to see the area more clearly.\ntake (item): This allows you to pick up an item and put it in your inventory.\n";
+				}
+				//help command
+
+				else if (input == "take")
+				{
+					cin >> hand;
+					if (hand == "book" || hand == "BOOK")
+					{
+						cout << "You pick up the book. You do not feel like reading it any longer.\nYou put it back down.\n";
+					}
+					else if (hand == "tea" || hand == "TEA")
+					{
+						cout << "\nYou pick up the tea. It is still slightly warm. You take a drink and put it back down.\n";
+					}
+					else
+					{
+						cout << "You cannot pick that up.";
+					}
+				}
+				//take command if user wants to take something that can be taken
+
+				else
+				{
+					cout << "Could you retype that?";
+				}
+
+			} while (housePosition == 2);
+			break;
+		case 3:		// case for bedroom
+			cout << "You are in the bedroom.\n";
+			cout << "What would you like to do?\n";
+			do {
+				cin >> input;
+
+				if (input == "info")
+				{
+					cout << "\nYour bedroom is the crown jewel of your house. Despite spending much of your time in here, you ";
+					cout << "make sure it stays clean. All the furniture in the room matches, or is very close to matching.\n";
+					cout << "That is not to say it was very hard to accomplish this feat. The only furniture is a bed that is to your right and a lonely looking chair.";
+					cout << conditional3 << "\n";
+				}
+
+				else if (input == "forward" || input == "backward" || input == "left" || input == "right")
+				{
+					housePosition = houseMovement(housePosition, input);
+
+				}
+
+				else if (input == "flashlight")
+				{
+					cout << "It is already bright enough.";
+				}
+
+				else if (input == "help") {
+					cout << "This is a text adventure game. The commands are:\nhelp: reads off the series of commands.\ndirection(left/right/backward/forward): This moves your character ";
+					cout << "left, right, backward or forward\ninfo: This gives you info on your current area.\noff/on: This toggles your flashlight ";
+					cout << "and allows you to see the area more clearly.\ntake (item): This allows you to pick up an item and put it in your inventory.\n";
+				}
+
+				else if (input == "take")
+				{
+					cin >> hand;
+					if (hand == "coat")
+					{
+						cout << "You pick up the coat. This will keep you warm in the woods.\n";
+						conditional3 = " ";
+						inventory.push_back(coat);
+					}
+					else
+					{
+						cout << "You cannot pick that up";
+					}
+
+
+				}
+
+				else
+				{
+					cout << "Could you retype that?";
+				}
+
+			} while (housePosition == 3);
+			break;
+
+		case 4:		//case for study
+			cout << "You are in the study.\n";
+			cout << "What would you like to do?\n";
+			do {
+				cin >> input;
+
+				if (input == "info")
+				{
+					cout << "\nThe study is not lit. You solve this problem by turning on the light switch. A desk covered in books ";
+					cout << "is in the middle of the room.\nA computer is perched on the top of the books. Posters of various bands adorn the walls.";
+					cout << flashlight << "In front of you is the kitchen. To your right is the hallway.\n";
+				}
+
+				else if (input == "forward" || input == "backward" || input == "left" || input == "right")
+				{
+					housePosition = houseMovement(housePosition, input);
+				}
+
+				else if (input == "flashlight")
+				{
+					cout << "It is already bright enough.";
+				}
+
+				else if (input == "help") {
+					cout << "This is a text adventure game. The commands are:\nhelp: reads off the series of commands.\ndirection(left/right/backward/forward): This moves your character ";
+					cout << "left, right, backward or forward\ninfo: This gives you info on your current area.\noff/on: This toggles your flashlight ";
+					cout << "and allows you to see the area more clearly.\ntake (item): This allows you to pick up an item and put it in your inventory.\n";
+				}
+
+				else if (input == "take")
+				{
+
+					cin >> hand;
+					if (hand == "computer")
+					{
+						cout << "The computer is connected to a monitor.\n You cannot pick it up.\n";
+					}
+					else if (hand == "flashlight")
+					{
+						cout << "\nYou pick up the flashlight. This will probably come in handy in the woods.\n";
+						flashlight = " ";
+						inventory.push_back(flashlight);
+					}
+					else
+					{
+						cout << "You cannot pick that up.";
+					}
+				}
+
+				else
+				{
+					cout << "Could you retype that?";
+				}
+
+			} while (housePosition == 4);
+			break;
+
+		case 5:		//case for hallway
+			cout << "You are in the hallway.\n";
+			cout << "What would you like to do?\n";
+			do {
+				cin >> input;
+
+				if (input == "info")
+				{
+					cout << "\nThe hallway is dark. There is not much in it. A painting of the nation's twenty first president hangs over the entrance to the study. ";
+					cout << "In front of you, light streams in from the living room.\n To your right is the bathroom.";
+					cout << "To your left is the study.\n";
+				}
+
+				else if (input == "forward" || input == "backward" || input == "left" || input == "right")
+				{
+					housePosition = houseMovement(housePosition, input);
+				}
+
+				else if (input == "flashlight")
+				{
+					cout << "It is already bright enough.";
+				}
+
+				else if (input == "help") {
+					cout << "This is a text adventure game. The commands are:\nhelp: reads off the series of commands.\ndirection(left/right/backward/forward): This moves your character ";
+					cout << "left, right, backward or forward\ninfo: This gives you info on your current area.\noff/on: This toggles your flashlight ";
+					cout << "and allows you to see the area more clearly.\ntake (item): This allows you to pick up an item and put it in your inventory.\n";
+				}
+
+				else if (input == "take")
+				{
+					cout << "\nThere is nothing to pick up.\n";
+				}
+
+				else
+				{
+					cout << "Could you retype that?";
+				}
+
+			} while (housePosition == 5);
+			break;
+
+		case 6:		//case for bathroom
+			cout << "You are in the bathroom.\n";
+			cout << "What would you like to do?\n";
+			do {
+				cin >> input;
+
+				if (input == "info")
+				{
+					cout << "\nThe bathroom is a standard bathroom. There is a shower, a toilet, and a sink. There is a small bar of soap. ";
+					cout << "In front of you is a closed door leading to your bedroom.\n To your left is the hallway\n.";
+				}
+
+				else if (input == "forward" || input == "backward" || input == "left" || input == "right")
+				{
+					housePosition = houseMovement(housePosition, input);
+				}
+
+
+				else if (input == "flashlight")
+				{
+					cout << "It is already bright enough.";
+				}
+
+				else if (input == "help") {
+					cout << "This is a text adventure game. The commands are:\nhelp: reads off the series of commands.\ndirection(left/right/backward/forward): This moves your character ";
+					cout << "left, right, backward or forward\ninfo: This gives you info on your current area.\noff/on: This toggles your flashlight ";
+					cout << "and allows you to see the area more clearly.\ntake (item): This allows you to pick up an item and put it in your inventory.\n";
+				}
+
+				else if (input == "take")
+				{
+					cin >> hand;
+					if (hand == "soap")
+						cout << "You pick up the soap. You decide to wash your hands. Your hands feel much cleaner.\n";
+					else
+					{
+						cout << "You cannot pick that up";
+					}
+
+
+				}
+
+				else
+				{
+					cout << "Could you retype that?";
+				}
+
+			} while (housePosition == 6);
+			break;
+
+
+			return 0;
+		}
+	} while (house == true);//  do while for house
+
+
+	cout << "You walk outside. It is dark.\nPerhaps you should turn on your flashlight.\n";
+
+	do
+	{
+		switch (position) {
+		case 1:
+			cout << "You are in the woods.\n";
+			cout << "What would you like to do?\n";
+			do {
+				cin >> input;
+
+				if (input == "info")
+				{
+					cout << "Your house is behind you and to your right. There is a clearing. Blue lights are gathered around a man who is lying down.\nHe is dead.\n";
+					cout << key2 << "The noise came from your right.";
+				}
+
+				else if (input == "forward" || input == "backward" || input == "left" || input == "right")
+				{
+					position = woodsMovement(position, input);
+				}
+
+				else if (input == "flashlight")
+				{
+					flashlightToggle = !flashlightToggle;
+				}
+
+				else if (input == "help") {
+					cout << "This is a text adventure game. The commands are:\nhelp: reads off the series of commands.\ndirection(left/right/backward/forward): This moves your character ";
+					cout << "left, right, backward or forward\ninfo: This gives you info on your current area.\noff/on: This toggles your flashlight ";
+					cout << "and allows you to see the area more clearly.\ntake (item): This allows you to pick up an item and put it in your inventory.\n";
+					cout << "You are currently in the woods.\n";
+				}
+
+				else if (input == "take")
+				{
+					cin >> hand;
+					if (hand == "key")
+					{
+						cout << "\nYou take the key.\n";
+						key2 = " ";
+						inventory.push_back(key2);
+					}
+
+					else
+					{
+						cout << "You cannot pick " << hand << " up.\n";
+					}
+				}
+
+				else
+				{
+					cout << "Could you retype that?\n";
+				}
+
+			} while (position == 1);
+			break;
+
+		case 2:
+			cout << "You are in the woods.\n";
+			cout << "What would you like to do?\n";
+			do {
+				cin >> input;
+
+				if (input == "info" && flashlightToggle == false)
+				{
+					cout << "Your house is behind you. You can see the dim light from the lamp from here.\n";
+					cout << "The noise came from your right. There appear to be blue lights to the left of you.";
+				}
+				else if (input == "info" && flashlightToggle == true)
+				{
+					cout << "Your house is behind you. You can see the dim light from the lamp from here.\n";
+					cout << "The noise came from your right. There appear to be blue lights to the left of you.\n";
+					cout << "Your flaslight illuminates the trees, but there is nothing to see here.\n";
+				}
+
+				else if (input == "forward" || input == "backward" || input == "left" || input == "right")
+				{
+					position = woodsMovement(position, input);
+				}
+
+				else if (input == "flashlight")
+				{
+					flashlightToggle = !flashlightToggle;
+				}
+
+				else if (input == "help") {
+					cout << "This is a text adventure game. The commands are:\nhelp: reads off the series of commands.\ndirection(left/right/backward/forward): This moves your character ";
+					cout << "left, right, backward or forward\ninfo: This gives you info on your current area.\noff/on: This toggles your flashlight ";
+					cout << "and allows you to see the area more clearly.\ntake (item): This allows you to pick up an item and put it in your inventory.\n";
+					cout << "You are currently in the woods.\n";
+				}
+
+				else if (input == "take")
+				{
+					cin >> hand;
+
+					cout << "You cannot pick " << hand << " up.\n";
+				}
+
+				else
+				{
+					cout << "Could you retype that?\n";
+				}
+
+			} while (position == 2);
+			break;
+		case 3:
+			cout << "You are in the woods.\n";
+			cout << "What would you like to do?\n";
+			do {
+				cin >> input;
+
+				if (input == "info" && flashlightToggle == false)
+				{
+					cout << "Your house is behind you. You can see the dim light from the lamp from here.\n";
+					cout << "The noise came from here. There appear to be blue lights to the left of you.\n";
+					cout << "Maybe you should turn on your flashlight\n";
+				}
+				else if (input == "info" && flashlightToggle == true)
+				{
+					cout << "Your house is behind you. You can see the dim light from the lamp from here.\n";
+					cout << "The noise came from your right. There appear to be blue lights to the left of you.\n";
+					cout << "Your flashlight illuminates the trees. There appears to be a hatch on the ground.\n Open it?\n y/n.\n";
+					cin >> input;
+					if (input == "y" && find(inventory.begin(), inventory.end(), key2) != inventory.end())
+					{
+						underground = true;
+						backyard = false;
+						break;
+					
+					}
+					else if (input == "y")
+					{
+						cout << "It is locked. Maybe the key is out here somewhere.";
+					}
+					else if (input == "n")
+					{
+						cout << "Okay";
+					}
+					else { cout << "Could you retpe that?"; }
+				}
+
+				else if (input == "forward" || input == "backward" || input == "left" || input == "right")
+				{
+					position = woodsMovement(position, input);
+				}
+
+				else if (input == "flashlight")
+				{
+					flashlightToggle = !flashlightToggle;
+				}
+
+				else if (input == "help") {
+					cout << "This is a text adventure game. The commands are:\nhelp: reads off the series of commands.\ndirection(left/right/backward/forward): This moves your character ";
+					cout << "left, right, backward or forward\ninfo: This gives you info on your current area.\noff/on: This toggles your flashlight ";
+					cout << "and allows you to see the area more clearly.\ntake (item): This allows you to pick up an item and put it in your inventory.\n";
+					cout << "You are currently in the woods.\n";
+				}
+
+				else if (input == "take")
+				{
+					cin >> hand;
+
+					cout << "You cannot pick " << hand << " up.\n";
+				}
+
+				else
+				{
+					cout << "Could you retype that?\n";
+				}
+
+			} while (position == 3);
+			break;
+
+		case 4:
+			cout << "You are in the woods.\n";
+			cout << "What would you like to do?\n";
+			do {
+				cin >> input;
+
+				if (input == "info" && flashlightToggle == false)
+				{
+					cout << "Your house is behind you. You can see the dim light from the lamp from here.\n";
+					cout << "The noise came from your right. There appear to be blue lights in front of you.";
+				}
+				else if (input == "info" && flashlightToggle == true)
+				{
+					cout << "Your house is behind you. You can see the dim light from the lamp from here.\n";
+					cout << "The noise came from your right. There appear to be blue lights to the left of you.\n";
+					cout << "Your flaslight illuminates the trees, but there is nothing to see here.\n";
+				}
+
+				else if (input == "forward" || input == "backward" || input == "left" || input == "right")
+				{
+					position = woodsMovement(position, input);
+				}
+
+				else if (input == "flashlight")
+				{
+					flashlightToggle = !flashlightToggle;
+				}
+
+				else if (input == "help") {
+					cout << "This is a text adventure game. The commands are:\nhelp: reads off the series of commands.\ndirection(left/right/backward/forward): This moves your character ";
+					cout << "left, right, backward or forward\ninfo: This gives you info on your current area.\noff/on: This toggles your flashlight ";
+					cout << "and allows you to see the area more clearly.\ntake (item): This allows you to pick up an item and put it in your inventory.\n";
+					cout << "You are currently in the woods.\n";
+				}
+
+				else if (input == "take")
+				{
+					cin >> hand;
+
+					cout << "You cannot pick " << hand << " up.\n";
+				}
+
+				else
+				{
+					cout << "Could you retype that?\n";
+				}
+
+			} while (position == 4);
+			break;
+
+		case 5:	
+			cout << "You are in the woods.\n";
+			cout << "What would you like to do?\n";
+			do {
+				cin >> input;
+
+				if (input == "info" && flashlightToggle == false)
+				{
+					cout << "Your house is behind you. You can see the dim light from the lamp from here.\n";
+					cout << "The noise came from your right. There appear to be blue lights to the left of you.";
+					cout << "Maybe you should turn on your flashlight.\n";
+				}
+
+				else if (input == "info" && flashlightToggle == true)
+				{
+					cout << "Your house is behind you. You can see the dim light from the lamp from here.\n";
+					cout << "The noise came from your right. There appear to be blue lights to the left of you.\n";
+					cout << "Your flaslight illuminates the trees, but there is nothing to see here.\n";
+				}
+
+				else if (input == "forward" || input == "backward" || input == "left" || input == "right")
+				{
+					position = woodsMovement(position, input);
+				}
+
+				else if (input == "flashlight")
+				{
+					flashlightToggle = !flashlightToggle;
+				}
+
+				else if (input == "help") {
+					cout << "This is a text adventure game. The commands are:\nhelp: reads off the series of commands.\ndirection(left/right/backward/forward): This moves your character ";
+					cout << "left, right, backward or forward\ninfo: This gives you info on your current area.\noff/on: This toggles your flashlight ";
+					cout << "and allows you to see the area more clearly.\ntake (item): This allows you to pick up an item and put it in your inventory.\n";
+					cout << "You are currently in the woods.\n";
+				}
+
+				else if (input == "take")
+				{
+					cin >> hand;
+
+					cout << "You cannot pick " << hand << " up.\n";
+				}
+
+				else
+				{
+					cout << "Could you retype that?\n";
+				}
+
+			} while (housePosition == 5);
+			break;
+
+		case 6:	
+			cout << "You are in the woods.\n";
+			cout << "What would you like to do?\n";
+			do {
+				cin >> input;
+
+				if (input == "info" && flashlightToggle == false)
+				{
+					cout << "Your house is behind you. You can see the dim light from the lamp from here.\n";
+					cout << "The noise came from in front of you. There appear to be blue lights to the left of you.\n";
+				}
+				else if (input == "info" && flashlightToggle == true)
+				{
+					cout << "Your house is behind you. You can see the dim light from the lamp from here.\n";
+					cout << "The noise came from your right. There appear to be blue lights to the left of you.\n";
+					cout << "Your flaslight illuminates the trees, but there is nothing to see here.\n";
+				}
+
+				else if (input == "forward" || input == "backward" || input == "left" || input == "right")
+				{
+					position = woodsMovement(position, input);
+				}
+
+				else if (input == "flashlight")
+				{
+					flashlightToggle = !flashlightToggle;
+				}
+
+				else if (input == "help") {
+					cout << "This is a text adventure game. The commands are:\nhelp: reads off the series of commands.\ndirection(left/right/backward/forward): This moves your character ";
+					cout << "left, right, backward or forward\ninfo: This gives you info on your current area.\noff/on: This toggles your flashlight ";
+					cout << "and allows you to see the area more clearly.\ntake (item): This allows you to pick up an item and put it in your inventory.\n";
+					cout << "You are currently in the woods.\n";
+				}
+
+				else if (input == "take")
+				{
+					cin >> hand;
+
+					cout << "You cannot pick " << hand << " up.\n";
+				}
+
+				else
+				{
+					cout << "Could you retype that?\n";
+				}
+			} while (housePosition == 6);
+			break;
+
+
+			return 0;
+		}
+
+	} while (backyard == true);
+
+	cout << "You open the hatch. There is a tunnel. You climb down.\n";
+
+	do
+	{
+		cin >> input;
+			if (input == "info" && flashlightToggle == true)
+			{
+				cout << "Your flashlight shines across the room, illuminating all the corners.\n There is a pedestal in one corner.\n Would you like to examine the pedestal?\ny/n\n";
+
+				cin >> hand;
+				if (hand == "y")
+				{
+					cout << "The pedestal has an encyrption on it. It reads 'What is always in front of you, but is impossible to see.'\n";
+
+					do {
+						cin >> input;
+						if (input == "future")
+						{
+							cout << "Congratulations, you win! You find treasure.\n\n THE END.\n";
+							underground = false;
+							break;
+						}
+
+						else
+						{
+							cout << "I'm sorry, that's not it.";
+							cout << "\n hint: It is one word.\n";
+						}
+					} while (input != "future");
+				}
+				
+				else if (hand == "n")
+				{
+					cout << "Would you like to leave?\ny/n\n";
+						cin >> hand;
+						if (hand == "y")
+						{
+							cout << "You leave and go home. Nothing happens.";
+							backyard = false;
+							underground = false;
+							house = false;
+
+							return 0;
+						}
+						else if (hand == "N")
+						{
+							break;
+						}
+
+				}
+				else {
+					cout << "Can you retype that?\n";
+				}
+			}
+			else if (input == "info" && flashlightToggle == false)
+			{
+				cout << "You cannot see anything. Perhaps you should turn on your flashlight.\n";
+			}
+
+			else if (input == "flashlight")
+			{
+				flashlightToggle = !flashlightToggle;
+			}
+
+			else if (input == "help") {
+				cout << "This is a text adventure game. The commands are:\nhelp: reads off the series of commands.\ndirection(left/right/backward/forward): This moves your character ";
+				cout << "left, right, backward or forward\ninfo: This gives you info on your current area.\noff/on: This toggles your flashlight ";
+				cout << "and allows you to see the area more clearly.\ntake (item): This allows you to pick up an item and put it in your inventory.\n";
+				cout << "You are currently in the woods.\n";
+			}
+
+			else if (input == "take")
+			{
+				cin >> hand;
+
+				cout << "You cannot pick " << hand << " up.\n";
+			}
+
+			else
+			{
+				cout << "Could you retype that?\n";
+			}
+	} while (underground == true);
+}
+
+int houseMovement(int house, string input)
+{
+	if (input == "forward")
+	{
+		if (house <= 3)
+		{
+			cout << "You cannot go any farther forward.\n";
+
+		}
+		else if (house == 2)
+		{
+			true;
+		}
+
+		else
+		{
+			house = house - 3;
+		}
+	}
+
+	else if (input == "backward") {
+		if (house >= 4)
+		{
+			cout << "You cannot go any farther backward.\n";
+		}
+		else
+		{
+			house = house + 3;
+		}
+	}
+
+	else if (input == "left")
+	{
+		if (house == 1 || house == 4)
+		{
+			cout << "You are as far left as you can go.\n";
+		}
+		else
+		{
+			house = house - 1;
+		}
+	}
+
+	else if (input == "right")
+	{
+		if (house == 3 || house == 6)
+		{
+			cout << "You are as far right as you can go.\n";
+		}
+		else
+		{
+			house = house + 1;
+		}
+	}
+
+	else {
+		input = "not understood";
+	}
+
+	return house;
+}
+int woodsMovement(int woods, string input)
+{
+	if (input == "forward")
+	{
+		if (woods <= 3)
+		{
+			cout << "A fence blocks you. You cannot go ny farther forward\n";
+
+		}
+
+		else
+		{
+			woods = woods - 3;
+		}
+	}
+
+	else if (input == "backward") {
+		if (woods >= 4 && woods != 5)
+		{
+			cout << "You cannot go any farther backward.\n";
+		}
+		else if (woods == 5)
+		{
+			cout << "Would you like to go back inside? The game will end.\n";
+			cout << "Y/N\n";
+			cin >> input;
+			if (input == "Y")
+			{
+				cout << "\n\n\n\n\n\n\n";
+				cout << "....and nothing eventful happened....\n\n\n THE END";
+
+
+			}
+			else { 
+				cout << "Can you retype that?\n";
+			}
+		}
+		else
+		{
+			woods = woods + 3;
+		}
+	}
+
+	else if (input == "left")
+	{
+		if (woods == 1 || woods == 4)
+		{
+			cout << "You are as far left as you can go.\n";
+		}
+		else
+		{
+			woods = woods - 1;
+		}
+	}
+
+	else if (input == "right")
+	{
+		if (woods == 3 || woods == 6)
+		{
+			cout << "You are as far right as you can go.\n";
+		}
+		else
+		{
+			woods = woods + 1;
+		}
+	}
+
+	else {
+		input = "not understood";
+	}
+
+	return woods;
+}
